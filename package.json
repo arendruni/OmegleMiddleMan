@@ -1,13 +1,27 @@
 {
-  "name": "omegle_middle_man",
-  "description": "A test omegle project",
-  "version": "0.0.1",
-  "private": true,
-  "dependencies": {
-    "express": "^4.17.1",
-    "faye": "^1.4.0",
-    "qs": "^6.9.4",
-    "request": "^2.88.2",
-    "socket.io": "^2.3.0"
-  }
+	"name": "omegle_middle_man",
+	"description": "A test omegle project",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"prettify": "prettier --write 'static/**/*.{css,js}' 'static/*.htm' '*.json' '*.js' "
+	},
+	"dependencies": {
+		"express": "^4.17.1",
+		"faye": "^1.4.0",
+		"qs": "^6.9.4",
+		"request": "^2.88.2",
+		"socket.io": "^2.3.0"
+	},
+	"devDependencies": {
+		"prettier": "^2.1.1"
+	},
+	"prettier": {
+		"printWidth": 100,
+		"useTabs": true,
+		"tabWidth": 4,
+		"semi": true,
+		"quoteProps": "consistent",
+		"trailingComma": "all"
+	}
 }

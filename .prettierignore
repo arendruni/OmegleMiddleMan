@@ -1,0 +1,3 @@
+static/js/*.min.js
+static/css/*.min.css
+package-lock.json
