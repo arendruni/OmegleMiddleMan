@@ -550,34 +550,37 @@ io.on("connection", function (socket) {
 				var port = data.port;
 
 				if (ip && port) {
-					request("http://" + ip + ":" + port + "/", { timeout: 500 }, function (
-						err,
-						res,
-					) {
-						if (err || res.statusCode >= 500) {
-							tryFindNewProxy(callback);
-						} else {
-							// Seems to be working
-							proxyInfo = {
-								ip: ip,
-								port: port,
-							};
+					request(
+						"http://" + ip + ":" + port + "/",
+						{
+							timeout: 500,
+						},
+						function (err, res) {
+							if (err || res.statusCode >= 500) {
+								tryFindNewProxy(callback);
+							} else {
+								// Seems to be working
+								proxyInfo = {
+									ip: ip,
+									port: port,
+								};
 
-							// Tell them their proxy is ready
-							socket.emit(
-								"proxyMessage",
-								"Routing intial connection through " +
-								ip +
-								":" +
-								port +
-								" to avoid captcha!",
-							);
+								// Tell them their proxy is ready
+								socket.emit(
+									"proxyMessage",
+									"Routing intial connection through " +
+										ip +
+										":" +
+										port +
+										" to avoid captcha!",
+								);
 
-							if (callback) {
-								callback(ip, port);
+								if (callback) {
+									callback(ip, port);
+								}
 							}
-						}
-					});
+						},
+					);
 				} else {
 					// Try again
 					tryFindNewProxy(callback);
@@ -620,10 +623,10 @@ Omegle.onReady(function (serverList) {
 	// Print out the server list
 	console.log(
 		"Found the following servers: " +
-		serverList.join(", ") +
-		"\n\n" +
-		Omegle.getSelectedServer() +
-		" was selected!\n",
+			serverList.join(", ") +
+			"\n\n" +
+			Omegle.getSelectedServer() +
+			" was selected!\n",
 	);
 	console.log("Visit 127.0.0.1:" + omeglePortNumber + " in your web browser to view the GUI.");
 });

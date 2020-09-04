@@ -16,7 +16,7 @@ var omegleSettings = omegleSettings || {
 	likes: true,
 	useCollege: false,
 	anyCollge: true,
-	video: false
+	video: false,
 };
 
 // The video server
@@ -290,8 +290,8 @@ function painMap() {
 				// Add the image
 				p.addTextLine(
 					'<img src="http://www.google.com//recaptcha/api/image?c=' +
-					challenge +
-					'" height="57">',
+						challenge +
+						'" height="57">',
 				);
 
 				// We are doing a captcha
@@ -376,7 +376,6 @@ function painMap() {
 			}
 		}
 	});
-
 
 	// Omegle is finding us a partner
 	pMap.socket.on("omegleWaiting", function (client_id) {
@@ -648,7 +647,6 @@ function painMap() {
 			p.broadcastMessage(msg);
 		}
 	});
-
 
 	// Stranger started typing
 	pMap.socket.on("omegleTyping", function (client_id) {
@@ -1178,7 +1176,7 @@ painMap.prototype.updateTimes = function () {
 var totalPains = 0;
 
 // Creates a new pain
-function pain() { }
+function pain() {}
 
 pain.prototype.setup = function (socket) {
 	// If we are connected or not
@@ -1230,8 +1228,8 @@ pain.prototype.setup = function (socket) {
 
 	this.flash = $(
 		'<object type="application/x-shockwave-flash" data="flash/webcams.swf" width="400" height="240" id="flash' +
-		this.painID +
-		'">',
+			this.painID +
+			'">',
 	);
 	this.flash.html('<param name="wmode" value="transparent">');
 	flashCon.append(this.flash);
@@ -2116,8 +2114,8 @@ pain.prototype.broadcastMessage = function (msg, override, nameOverride) {
 						// Add it to our log
 						var highlight = p.addTextLine(
 							'<font color="blue">Broadcasted:</font> ' +
-							this.getPrefix() +
-							htmlEntities(msg),
+								this.getPrefix() +
+								htmlEntities(msg),
 							msg,
 							"Broadcasted",
 						);
@@ -2501,7 +2499,7 @@ pain.prototype.updateTime = function () {
     Helper Pain
 */
 
-function helperPain() { }
+function helperPain() {}
 helperPain.prototype = new pain();
 
 helperPain.prototype.setup = function () {
@@ -2718,7 +2716,7 @@ helperPain.prototype.rebuildButtons = function () {
 									// Add it to our log
 									var highlight = pain.addTextLine(
 										'<font color="blue">Broadcasted:</font> ' +
-										htmlEntities(myMessage),
+											htmlEntities(myMessage),
 										myMessage,
 										"Broadcasted",
 									);
