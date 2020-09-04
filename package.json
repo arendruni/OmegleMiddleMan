@@ -4,10 +4,10 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "qs": "*",
-    "express": "*",
-    "socket.io": "*",
-    "faye": "*",
-    "request": "*"
+    "express": "^4.17.1",
+    "faye": "^1.4.0",
+    "qs": "^6.9.4",
+    "request": "^2.88.2",
+    "socket.io": "^2.3.0"
   }
 }
