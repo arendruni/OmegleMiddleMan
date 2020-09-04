@@ -115,6 +115,12 @@ function painMap() {
         }
     });
 
+    // Autoload blackhole list
+    if (omegleSettings.autoBlackHoleList) {
+        $('#updateBlackHoleListField').val(omegleSettings.autoBlackHoleList.join("\n"));
+        $('#updateBlackHoleList').click();
+    }
+
     // Handle disconnect
     pMap.socket.on('disconnect', function () {
         // Add disconnect to all pains
