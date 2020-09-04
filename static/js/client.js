@@ -63,6 +63,13 @@ function painMap() {
         pMap.socket.emit('omegleUnlock');
     });
 
+    // Hook clear all
+    $("#clearAll").click(() => {
+        if (pMap.pains) {
+            pMap.pains.forEach(pain => pain.field.empty());
+        }
+    })
+
     $('#blackholeList').click(function(){
         $('#autoBlackholeList').toggle();
     });
