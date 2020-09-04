@@ -13,8 +13,6 @@ var io = require("socket.io")(httpServer);
 
 var settings = require("./settings.json");
 
-//var Cleverbot = require('./cleverbot.js');
-
 app.get("/", function (req, res) {
 	res.sendFile(__dirname + "/static/index.html");
 });
@@ -23,9 +21,6 @@ app.get("/", function (req, res) {
 io.on("connection", function (socket) {
 	// List of omegle clients for this person
 	var omegleClients = {};
-
-	// List of clever bot clients
-	//var cleverClients = {};
 
 	// Stores challenge omegle clients
 	var challenges = {};
@@ -336,12 +331,6 @@ io.on("connection", function (socket) {
 			// Remove reference to it
 			delete omegleClients[key];
 		}
-
-		/*for(var key in cleverClients) {
-            if(cleverClients[key] != null) {
-                delete cleverClients[key];
-            }
-        }*/
 	});
 
 	// Client wants us to disconnect a stranger
@@ -540,31 +529,6 @@ io.on("connection", function (socket) {
 		// Attempt to reconnect
 		makeConnection(args, true);
 	});
-
-	// Client is asking for a new clever client
-	/*socket.on('newClever', function(args){
-        // Find the first free clientID
-        var i = 0;
-        while(cleverClients['clever'+(++i)] != null) {};
-
-        // Create the bot
-        cleverClients['clever'+i] = new Cleverbot();
-
-        // Forward the handler to them
-        socket.emit('newClever', 'clever'+i, args);
-    });
-
-    // Send a message to clever bot
-    socket.on('cleverSend', function(client_id, msg){
-        // Check if the client even exists
-        if(cleverClients[client_id]) {
-            // Send the message
-            cleverClients[client_id].write(msg, function(resp) {
-                // Forward message to our client
-                socket.emit('cleverGotMessage', client_id, resp['message']);
-            });
-        }
-    });*/
 
 	// Attempt to find a new proxy
 	function tryFindNewProxy(callback) {

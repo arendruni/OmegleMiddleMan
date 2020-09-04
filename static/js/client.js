@@ -16,8 +16,7 @@ var omegleSettings = omegleSettings || {
 	likes: true,
 	useCollege: false,
 	anyCollge: true,
-	video: false,
-	delayed: true,
+	video: false
 };
 
 // The video server
@@ -291,8 +290,8 @@ function painMap() {
 				// Add the image
 				p.addTextLine(
 					'<img src="http://www.google.com//recaptcha/api/image?c=' +
-						challenge +
-						'" height="57">',
+					challenge +
+					'" height="57">',
 				);
 
 				// We are doing a captcha
@@ -378,47 +377,6 @@ function painMap() {
 		}
 	});
 
-	// Server created a new clever instance for us
-	pMap.socket.on("newClever", function (client_id, args) {
-		// Search for a new pain
-		var found = false;
-		for (var key in pMap.pains) {
-			// Grab the container
-			var p = pMap.pains[key];
-
-			if (p.searching && p.painID == args.painID) {
-				// Found a connection
-				p.searching = false;
-				p.connected = true;
-				p.updateClientId(client_id);
-
-				// Store the start time
-				p.startTime = new Date().getTime();
-
-				// Create the text
-				p.updateButton("Disconnect", "btn-danger");
-
-				// Tell the user
-				p.addTextLine("Cleverbot has connected!");
-
-				// Update name
-				p.nameField.val("Cleverbot");
-
-				// Auto send message
-				p.sendAutoMessage(client_id, 400);
-
-				// We have found a match
-				found = true;
-				break;
-			}
-		}
-
-		// Did we find a pain that needed it?
-		if (!found) {
-			// Unwanted connection, just drop it
-			pMap.socket.emit("cleverDisconnect", client_id);
-		}
-	});
 
 	// Omegle is finding us a partner
 	pMap.socket.on("omegleWaiting", function (client_id) {
@@ -691,34 +649,6 @@ function painMap() {
 		}
 	});
 
-	// We got a cleverbot message
-	pMap.socket.on("cleverGotMessage", function (client_id, msg) {
-		var p = pMap.findByID(client_id);
-
-		if (p) {
-			// Add a delay if we need to
-			var delay = 0;
-			if (p.moderated.is(":checked")) {
-				delay = 1500 + Math.random() * 2000;
-			}
-
-			// Add a small delay
-			setTimeout(function () {
-				// They are no longer typing
-				p.updateTalking(false);
-
-				// Add the message
-				p.addTextLine(
-					'<font color="red">Cleverbot:</font> ' + htmlEntities(msg),
-					msg,
-					"Cleverbot",
-				);
-
-				// Broadcast it
-				p.broadcastMessage(msg);
-			}, delay);
-		}
-	});
 
 	// Stranger started typing
 	pMap.socket.on("omegleTyping", function (client_id) {
@@ -904,25 +834,6 @@ painMap.prototype.updateWidth = function () {
 painMap.prototype.setupOmeglePain = function () {
 	// Create a new pain
 	var p = new pain();
-	p.setup(this.socket);
-
-	// Store the pain
-	this.pains.push(p);
-
-	// Update the broadcasting
-	this.updateBroadcast();
-
-	// Store a reference back to this painMap
-	p.painMap = this;
-
-	// Update width
-	this.updateWidth();
-};
-
-// Sets up a new cleverbot pain
-painMap.prototype.setupCleverBotPain = function () {
-	// Create a new pain
-	var p = new cleverPain();
 	p.setup(this.socket);
 
 	// Store the pain
@@ -1267,7 +1178,7 @@ painMap.prototype.updateTimes = function () {
 var totalPains = 0;
 
 // Creates a new pain
-function pain() {}
+function pain() { }
 
 pain.prototype.setup = function (socket) {
 	// If we are connected or not
@@ -1319,8 +1230,8 @@ pain.prototype.setup = function (socket) {
 
 	this.flash = $(
 		'<object type="application/x-shockwave-flash" data="flash/webcams.swf" width="400" height="240" id="flash' +
-			this.painID +
-			'">',
+		this.painID +
+		'">',
 	);
 	this.flash.html('<param name="wmode" value="transparent">');
 	flashCon.append(this.flash);
@@ -2205,8 +2116,8 @@ pain.prototype.broadcastMessage = function (msg, override, nameOverride) {
 						// Add it to our log
 						var highlight = p.addTextLine(
 							'<font color="blue">Broadcasted:</font> ' +
-								this.getPrefix() +
-								htmlEntities(msg),
+							this.getPrefix() +
+							htmlEntities(msg),
 							msg,
 							"Broadcasted",
 						);
@@ -2590,7 +2501,7 @@ pain.prototype.updateTime = function () {
     Helper Pain
 */
 
-function helperPain() {}
+function helperPain() { }
 helperPain.prototype = new pain();
 
 helperPain.prototype.setup = function () {
@@ -2807,7 +2718,7 @@ helperPain.prototype.rebuildButtons = function () {
 									// Add it to our log
 									var highlight = pain.addTextLine(
 										'<font color="blue">Broadcasted:</font> ' +
-											htmlEntities(myMessage),
+										htmlEntities(myMessage),
 										myMessage,
 										"Broadcasted",
 									);
@@ -2845,80 +2756,6 @@ helperPain.prototype.onbroadcastChanged = function () {
 
 helperPain.prototype.addTextLine = function () {
 	// do nothing
-};
-
-/*
-    Cleverbot pain
-*/
-
-function cleverPain() {}
-cleverPain.prototype = new pain();
-
-// Creates a connectiom for this pain
-cleverPain.prototype.createConnection = function () {
-	// We are now searching
-	this.searching = true;
-	this.socket.emit("newClever", {
-		painID: this.painID,
-	});
-
-	// Add a message
-	this.addTextLine("Creating a connection...");
-
-	// Change text
-	this.updateButton("Cancel Search", "btn-danger");
-};
-
-// Sends a message to the given controller
-cleverPain.prototype.sendMessage = function (msg) {
-	// Ensure we are connected
-	if (this.connected) {
-		// Send the message
-		this.socket.emit("cleverSend", this.getClientId(), msg);
-
-		// Show that they're talking
-		this.updateTalking(true);
-
-		// Tell others
-		this.broadcastTyping();
-	}
-
-	// This controller is no longer typing
-	this.isTyping = false;
-};
-
-// Called when we want to disconnect from a cleverbot
-cleverPain.prototype.disconnect = function () {
-	// Check if we are already connected
-	if (this.connected) {
-		// Disconnect
-		this.socket.emit("cleverDisconnect", this.getClientId());
-	}
-
-	// Reset vars
-	this.connected = false;
-	this.searching = false;
-	this.reconnecting = false;
-	this.updateClientId();
-
-	// Change text
-	this.updateButton("New", "btn-primary");
-
-	// Print time connected
-	this.printTimeConnected();
-
-	// Add a message
-	this.addTextLine("You have disconnected!");
-	this.addLineBreak();
-};
-
-// Add the modereted (actually a delayed) button
-cleverPain.prototype.addModeratedButton = function () {
-	this.con.append($('<label for="mod' + this.painID + '">').text("Delayed:"));
-	this.moderated = $('<input id="mod' + this.painID + '">')
-		.attr("type", "checkbox")
-		.prop("checked", omegleSettings.delayed);
-	this.con.append(this.moderated);
 };
 
 // Adds commas to numbers
@@ -2994,11 +2831,6 @@ $(document).ready(function () {
 	$("#newOmegleWindow").click(function () {
 		// Setup a new pain
 		mainPainMap.setupOmeglePain();
-	});
-
-	$("#newCleverBot").click(function () {
-		// Setup a new pain
-		mainPainMap.setupCleverBotPain();
 	});
 
 	$("#newChatHelper").click(function () {

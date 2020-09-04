@@ -38,9 +38,6 @@ omegleSettings = {
 	// Turn video mode on by default
 	video: false,
 
-	// Should cleverbot have a delay
-	delayed: true,
-
 	// Max number of common interests
 	maxCommonInterests: null,
 
