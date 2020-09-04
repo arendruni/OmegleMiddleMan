@@ -2530,8 +2530,11 @@ helperPain.prototype.setup = function() {
 
     // A store for stuff
     this.messageList = [];
-
     var _this = this;
+
+    if (omegleSettings.helperMessages) {
+        omegleSettings.helperMessages.forEach((msg) => _this.addHelper(msg));
+    }
 
     // Lower control buttons
     $('<tr>').append(
