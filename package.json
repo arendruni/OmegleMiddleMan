@@ -15,7 +15,13 @@
 		"socket.io": "^2.3.0"
 	},
 	"devDependencies": {
+		"husky": "^4.2.5",
 		"prettier": "^2.1.1"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "npm run prettify"
+		}
 	},
 	"prettier": {
 		"printWidth": 100,
