@@ -14,10 +14,9 @@ var io = require("socket.io")(httpServer);
 var settings = require("./settings.json");
 
 //var Cleverbot = require('./cleverbot.js');
-//var Sham = require('./shamchat.js').Sham;
 
 app.get("/", function (req, res) {
-	res.sendFile(__dirname + "/static/index.htm");
+	res.sendFile(__dirname + "/static/index.html");
 });
 
 // Handle connections
@@ -604,10 +603,10 @@ io.on("connection", function (socket) {
 							socket.emit(
 								"proxyMessage",
 								"Routing intial connection through " +
-									ip +
-									":" +
-									port +
-									" to avoid captcha!",
+								ip +
+								":" +
+								port +
+								" to avoid captcha!",
 							);
 
 							if (callback) {
@@ -657,20 +656,10 @@ Omegle.onReady(function (serverList) {
 	// Print out the server list
 	console.log(
 		"Found the following servers: " +
-			serverList.join(", ") +
-			"\n\n" +
-			Omegle.getSelectedServer() +
-			" was selected!\n",
+		serverList.join(", ") +
+		"\n\n" +
+		Omegle.getSelectedServer() +
+		" was selected!\n",
 	);
 	console.log("Visit 127.0.0.1:" + omeglePortNumber + " in your web browser to view the GUI.");
 });
-
-/*var test = new Sham();
-test.start(function(err) {
-    console.log(err);
-});
-
-test.on('newid', function(client_id) {
-    console.log('Got a newID: ' + client_id);
-});
-*/

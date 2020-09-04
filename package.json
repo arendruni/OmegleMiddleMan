@@ -5,7 +5,7 @@
 	"private": true,
 	"scripts": {
 		"start": "node app.js",
-		"prettify": "prettier --write 'static/**/*.{css,js}' 'static/*.htm' '*.json' '*.js' "
+		"prettify": "prettier --write 'static/**/*.{css,js}' 'static/*.html' '*.json' '*.js' "
 	},
 	"dependencies": {
 		"express": "^4.17.1",
