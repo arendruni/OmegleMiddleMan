@@ -35,9 +35,6 @@ omegleSettings = {
 	// Turn use any college on by default
 	anyCollge: true,
 
-	// Turn video mode on by default
-	video: false,
-
 	// Max number of common interests
 	maxCommonInterests: null,
 

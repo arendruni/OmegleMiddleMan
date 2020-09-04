@@ -20,8 +20,6 @@
 -   **Use Likes:** This option will use the likes listed in the box at the bottom of the screen
 -   **College:** This will search for college students, note: You need to setup your college settings, see the Adding prefereces section
 -   **Any College:** If selected, it will search for people from any college, not jsut your own
--   **Video:** This will enable video mode
--   Use the console command `setCameraSize(width, height, fps, quality)` to change the settings. The default is `setCameraSize(320, 240, 24, 91)`
 
 ### How do I know if my message was delivered?
 

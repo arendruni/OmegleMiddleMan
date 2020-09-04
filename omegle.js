@@ -91,12 +91,6 @@ function Omegle(args) {
 			this.topics = args.topics;
 			this.use_likes = 1;
 		}
-
-		// Check for a camera
-		if (args.camera && args.spid) {
-			this.camera = args.camera;
-			this.spid = args.spid;
-		}
 	}
 
 	// Reset our ID when the stranger disconnects
@@ -279,7 +273,6 @@ Omegle.prototype.start = function (callback, proxyInfo) {
 				wantsspy: this.wantsspy,
 				ask: this.ask,
 				spid: this.spid,
-				camera: this.camera,
 				caps: "recaptcha2",
 			}),
 		function (res) {

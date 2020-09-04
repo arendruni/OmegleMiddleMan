@@ -16,12 +16,7 @@ var omegleSettings = omegleSettings || {
 	likes: true,
 	useCollege: false,
 	anyCollge: true,
-	video: false,
 };
-
-// The video server
-var omegleVideoServer = "rtmfp://p2p.rtmfp.net";
-var omegleVideoServerPassword = "6fd539b64a3ca859d410f2f6-ac89c5a8742e";
 
 // Default topics
 var defaultTopics = omegleSettings.defaultTopics;
@@ -387,7 +382,7 @@ function painMap() {
 	});
 
 	// Omegle connected us to someone
-	pMap.socket.on("omegleConnected", function (client_id, peerID) {
+	pMap.socket.on("omegleConnected", function (client_id) {
 		var p = pMap.findByID(client_id);
 
 		// Increase total number of connections
@@ -418,12 +413,6 @@ function painMap() {
 
 			// Store their name
 			p.nameField.val("Stranger " + pMap.totalConnections);
-
-			// Is there a camera?
-			if (peerID != null) {
-				// Pass to our streamer
-				document.getElementById("flash" + p.painID).gotStrangerPeerID(peerID);
-			}
 
 			// Handle notifications
 			pMap.notifications();
@@ -758,60 +747,6 @@ painMap.prototype.notifications = function () {
 	} else {
 		document.title = websiteTitle;
 		$("#favicon").attr("href", "images/favicon.png");
-	}
-};
-
-// We got a new peerID
-painMap.prototype.setPeerID = function (args) {
-	var p = this.findByPainID(args.painID);
-
-	if (p) {
-		p.peerID = args.nearID;
-		p.cameras = args.cameras;
-		p.mics = args.mics;
-
-		for (var i = 0; i < args.cameras.length; i++) {
-			p.camSelector.append(
-				$("<option/>", {
-					text: args.cameras[i],
-				}),
-			);
-		}
-
-		for (var i = 0; i < args.mics.length; i++) {
-			p.micSelector.append(
-				$("<option/>", {
-					text: args.mics[i],
-				}),
-			);
-		}
-
-		// Set default stuff
-		document.getElementById("flash" + args.painID).setCameraName("0");
-		document.getElementById("flash" + args.painID).setMicID("0");
-
-		// Show them
-		p.camSelector.show();
-		p.micSelector.show();
-	}
-};
-
-painMap.prototype.setCameraSize = function (width, height, fps, quality) {
-	if (width == null) width = 320;
-	if (height == null) height = 240;
-	if (fps == null) fps = 24;
-	if (quality == null) quality = 91;
-
-	// Loop over all pains
-	for (var key in this.pains) {
-		// Grab the pain
-		var p = this.pains[key];
-
-		// Do it
-		var a = document.getElementById("flash" + p.painID);
-		if (a) {
-			a.setCameraSize(width, height, fps, quality);
-		}
 	}
 };
 
@@ -1217,45 +1152,8 @@ pain.prototype.setup = function (socket) {
 	});
 	mainCon.append(this.container);
 
-	//var tr = $('<tr>');
-	//this.container.append(tr);
-
-	//var td = $('<td>');
-	//tr.append(td);
-
-	var flashCon = $('<div class="flashCon">').hide().appendTo(this.container);
-	//td.append(flashCon);
-
-	this.flash = $(
-		'<object type="application/x-shockwave-flash" data="flash/webcams.swf" width="400" height="240" id="flash' +
-			this.painID +
-			'">',
-	);
-	this.flash.html('<param name="wmode" value="transparent">');
-	flashCon.append(this.flash);
-
 	// Grab a reference to the pain
 	var pain = this;
-
-	// Give a short delay for it to load, then send painID
-	var painID = this.painID;
-	var flash = document.getElementById("flash" + this.painID);
-	var initFlash;
-
-	// Function to setup flash
-	initFlash = function () {
-		// Check if it exists yet
-		if (flash.setPainID) {
-			// Pass variables
-			flash.setPainID(painID, omegleVideoServer, omegleVideoServerPassword);
-		} else {
-			// Try again shortly
-			setTimeout(initFlash, 100);
-		}
-	};
-
-	// Attempt to setup flash
-	initFlash();
 
 	//tr = $('<tr>').appendTo(this.container);
 
@@ -1509,56 +1407,6 @@ pain.prototype.setup = function (socket) {
 		}).appendTo(bottomRow),
 	);
 
-	// Video Options
-	this.video = $("<input>", {
-		id: "video" + this.painID,
-		type: "checkbox",
-		change: function () {
-			// Hide or unhide the video stuff
-			if (this.checked) {
-				flashCon.show();
-				pain.container.addClass("videoEnabled");
-			} else {
-				flashCon.hide();
-				pain.camSelector.hide();
-				pain.micSelector.hide();
-				pain.container.removeClass("videoEnabled");
-			}
-		},
-		checked: omegleSettings.video,
-	}).prependTo(
-		$("<label>", {
-			for: "video" + this.painID,
-			text: "Video",
-		}).appendTo(bottomRow),
-	);
-
-	// Should we show the video stuff?
-	if (omegleSettings.video) {
-		flashCon.show();
-	}
-
-	// Append selectors
-	this.camSelector = $("<select>", {
-		class: "form-control",
-		change: function () {
-			document
-				.getElementById("flash" + painID)
-				.setCameraName($(this).find(":selected").index().toString());
-		},
-	})
-		.appendTo(this.con)
-		.hide();
-
-	this.micSelector = $("<select>", {
-		class: "form-control",
-		change: function () {
-			document.getElementById("flash" + painID).setMicID($(this).find(":selected").index());
-		},
-	})
-		.appendTo(this.con)
-		.hide();
-
 	this.con.append($("<label>").text("B:"));
 	this.broadcast = $('<div class="omegleBroadcast">');
 	this.con.append(this.broadcast);
@@ -1764,12 +1612,6 @@ pain.prototype.createConnection = function () {
 		for (var key in omegleSettings.bonusParams) {
 			params[key] = omegleSettings.bonusParams[key];
 		}
-	}
-
-	// Do we have a camera? (and want webcam mode)
-	if (this.video.is(":checked") && this.peerID) {
-		params.spid = this.peerID;
-		params.camera = "USB 2.0 Web Camera";
 	}
 
 	// Check if we should limit the connection or not
@@ -2764,12 +2606,6 @@ function numberWithCommas(x) {
 // The main pain map
 var mainPainMap;
 
-// peerID stuff for streaming video
-function setPeerID(painID, newPeerID) {
-	// Pass the event
-	mainPainMap.setPeerID(painID, newPeerID);
-}
-
 // Returns the currnt time, formatted nicely
 function niceTime(addSeconds) {
 	var months = {
@@ -2814,12 +2650,6 @@ function htmlEntities(str) {
 		.replace(/>/g, "&gt;")
 		.replace(/"/g, "&quot;");
 }
-
-// Set all camera sizes
-function setCameraSize(width, height, fps, quality) {
-	mainPainMap.setCameraSize(width, height, fps, quality);
-}
-
 $(document).ready(function () {
 	// Create the pain manager
 	mainPainMap = new painMap();

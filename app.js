@@ -101,9 +101,9 @@ io.on("connection", function (socket) {
 		});
 
 		// Omegle found us a partner
-		om.on("connected", function (peerID) {
+		om.on("connected", function () {
 			// Tell the client
-			socket.emit("omegleConnected", realClientID, peerID);
+			socket.emit("omegleConnected", realClientID);
 
 			// Make sure we're not reconnecting
 			if (!reconnect) {
